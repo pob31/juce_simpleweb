@@ -302,6 +302,7 @@ void SimpleWebSocketServerBase::serveFile(const File& file, std::shared_ptr<Http
 	}
 }
 
+#if SIMPLEWEB_SECURE_SUPPORTED
 void SimpleWebSocketServerBase::serveFile(const File& file, std::shared_ptr<HttpsServer::Response> response)
 {
 	String contentType = MIMETypes::getMIMEType(file.getFileExtension());
@@ -328,6 +329,8 @@ void SimpleWebSocketServerBase::serveFile(const File& file, std::shared_ptr<Http
 		response->write((const char*) b.getData(), b.getSize());
 	}
 }
+
+#endif
 
 void SimpleWebSocketServer::onMessageCallback(std::shared_ptr<WsServer::Connection> connection, std::shared_ptr<WsServer::InMessage> in_message)
 {

@@ -49,11 +49,18 @@
 #include <juce_core/juce_core.h>
 #include <juce_cryptography/juce_cryptography.h>
 
-//#ifndef __arm__
+// Let the build choose. Defining SIMPLEWEB_SECURE_SUPPORTED=0 on the compile
+// line drops the TLS paths and, with them, the OpenSSL dependency; anything
+// that does not define it keeps the previous behaviour, TLS on.
+//
+// The guard is what makes that possible: an unconditional #define here
+// silently overrides whatever the build asked for, so a consumer passing 0
+// gets a macro redefinition and TLS anyway. Wanted by hosts that speak plain
+// http:// and ws:// - a DAW plugin in particular often cannot resolve
+// libcrypto at load time.
+#ifndef SIMPLEWEB_SECURE_SUPPORTED
 #define SIMPLEWEB_SECURE_SUPPORTED 1
-//#else
-//#define SIMPLEWEB_SECURE_SUPPORTED 0
-//#endif
+#endif
 
 #if SIMPLEWEB_SECURE_SUPPORTED
 #define _WIN32_WINDOWS 0x601

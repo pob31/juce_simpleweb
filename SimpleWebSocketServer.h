@@ -50,7 +50,9 @@ public:
 	virtual void sendExclude(const juce::MemoryBlock& data, const juce::StringArray excludeIds) {}
 
 	void serveFile(const juce::File& file, std::shared_ptr<HttpServer::Response> response);
+#if SIMPLEWEB_SECURE_SUPPORTED
 	void serveFile(const juce::File& file, std::shared_ptr<HttpsServer::Response> response);
+#endif
 
 	void stop();
 	void closeConnection(const juce::String& id, int code = 1000, const juce::String& reason = "YouKnowWhy");
