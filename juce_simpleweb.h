@@ -43,8 +43,20 @@
 
 
 #define USE_STANDALONE_ASIO 1
-#define NOGDI
+// NOGDI is deliberately NOT defined: it hides LOGFONTW, RGBQUAD and the rest
+// of wingdi.h, which juce_graphics and juce_gui_basics need. Any consumer that
+// links a JUCE GUI module alongside this one fails to compile with it set.
 #define ASIO_DISABLE_SERIAL_PORT 1
+
+#ifdef _WIN32
+  // asio wants a Windows version before <winsock2.h> reaches it, and picks a
+  // very old default if nobody says. 0x0A00 is Windows 10. _WIN32_WINDOWS is
+  // the Win9x-era spelling and does not do this job.
+  #ifndef _WIN32_WINNT
+    #define _WIN32_WINNT 0x0A00
+  #endif
+  #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#endif
 
 #include <juce_core/juce_core.h>
 #include <juce_cryptography/juce_cryptography.h>
@@ -63,8 +75,6 @@
 #endif
 
 #if SIMPLEWEB_SECURE_SUPPORTED
-#define _WIN32_WINDOWS 0x601
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "common/crypto.hpp"
 #endif
 
